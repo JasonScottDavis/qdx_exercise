@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace qdxExercise
 {
@@ -20,17 +21,7 @@ namespace qdxExercise
             //Instantiate an array to hold the winning number  
             int[] numberWinning = new int[4];
 
-            /*
-            //Populate array - Duplicates Allowed
-            for (int i = 0; i < 4; i++)
-            {
-                numberWinning[i] = new Random().Next(1, 7);
-            }
-            */
-
-            
             //Populate array - Duplicates not Allowed
-            //Running With This Plan
             int[] digits = new int[] { 1, 2, 3, 4, 5, 6 };
             int randomDigit = new Random().Next(0, 6);
            
@@ -44,18 +35,61 @@ namespace qdxExercise
                 digits[randomDigit] = 0;
             }
 
-
-
-
             //Preview Number
             string checkJoin = String.Join("", Array.ConvertAll<int, String>(numberWinning, Convert.ToString));
-            Console.WriteLine(checkJoin);
+            Console.WriteLine("Winning Number: " + checkJoin);
+
+
+
+
+
 
 
             //allow player to input a combination of 4 digits
+            //Starting to think moving to all lists is the right move
+            
+
+            int[] numberGuess = new int[4];
+
+            List<int> digitChoice = new List<int>() { 1, 2, 3, 4, 5, 6 };
+                
+
+            for (int i = 0; i < 4; i++)
+            
+            {
+                foreach (int remainingDigit in digitChoice)
+                {
+                    Console.Write(remainingDigit);
+                }
+                
+                Console.WriteLine("\nYour Choice?");
+                
+                //Will have to limit choices to remaining digits
+                numberGuess[i] = Int32.Parse(Console.ReadLine());
+                digitChoice.Remove(numberGuess[i]);
+
+                string checkJoin2 = String.Join("", Array.ConvertAll<int, String>(numberGuess, Convert.ToString));
+                Console.WriteLine(checkJoin2);
+
+            }
+
+
+            //Choose 4 of the 6 numbers
+            //Display All 6
+            //Allow Choice 
+            //Display remaining
+            //Allow choice ...
+
+
+
+
+
             //error check inputs
-            //question: should the user be able to choose only 1 of each digit? 
-            //question: should I ask for a 4 digit number from the user or only one at a time.
+
+            //question: should the user be able to choose only 1 of each digit? -Assuming yes
+
+            //question: should I ask for a 4 digit number from the user or only one at a time. -Assuming one at a time
+
             //Note: Confirm with Quadax before you submit. Working on the assumption that they will pick one at a time and only one per digit
 
 
