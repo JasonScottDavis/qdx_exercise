@@ -21,7 +21,7 @@ namespace qdxExercise
 
 
 
-            while (userGuess != winningNumber && attemptCount < 10)
+            while (userGuess != winningNumber && attemptCount <= 10)
             {
                 userGuess = userNumberChoice();
 
@@ -34,10 +34,27 @@ namespace qdxExercise
 
                 attemptCount++;
 
-                Console.WriteLine($"Press Enter for Guess {attemptCount}");
-                Console.ReadLine();
-                Console.SetCursorPosition(0, 5);
 
+                if (attemptCount < 10)
+                {
+                    Console.WriteLine($"Press Enter for Guess {attemptCount}");
+                    Console.ReadLine();
+                }
+                else if(attemptCount == 10)
+                {
+                    Console.WriteLine($"Press Enter for Guess Last Attempt!");
+                    Console.ReadLine();
+                }
+            }
+
+            if(userGuess == winningNumber)
+            {
+                Console.WriteLine("Winner!");
+            }
+
+            else if (attemptCount >= 10)
+            {
+                Console.WriteLine("Sorry! Thanks for Playing! Please Come Again!");
             }
         }
 
@@ -109,6 +126,7 @@ namespace qdxExercise
 
                 //To Do: Limit choices and errors
 
+                
                 numberGuess[i] = Int32.Parse(Console.ReadLine());
                 digitChoice.Remove(numberGuess[i]);
                 Console.Clear();
@@ -146,20 +164,16 @@ namespace qdxExercise
                         }
                     }
                 }
-
-
             }
+            //Sort '+' first, then '-', then ''
             Array.Sort(results);
             Array.Reverse(results);
-
             foreach (string result in results)
             {
                 resultString += result;
             }
-            
+            //return resultsString for use
             return resultString;
         }
-
-
     }
 }
