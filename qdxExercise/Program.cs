@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace qdxExercise
 {
     class Program
@@ -122,7 +124,8 @@ namespace qdxExercise
         //Calculate results of the current guess (Note: Need to fix order: + first, - second, blank last)
         static string resultsDisplay(int[] userGuess, int[] winningNumber)
         {
-            string results = "";
+            string[] results = new string[4];
+            string resultString = "";
 
             //Compare guess to winning number
             for (int i = 0; i < userGuess.Length; i++)
@@ -130,7 +133,7 @@ namespace qdxExercise
                 //Plus sign for each if it is in the right place
                 if (userGuess[i] == winningNumber[i])
                 {
-                    results += "+";
+                    results[i] = "+";
                 }
                 //minus sign for each in the answer, but not in the right place
                 else
@@ -139,15 +142,22 @@ namespace qdxExercise
                     {
                         if (numWin == userGuess[i])
                         {
-                            results += "-";
+                            results[i] += "-";
                         }
                     }
                 }
 
 
             }
+            Array.Sort(results);
+            Array.Reverse(results);
 
-            return results;
+            foreach (string result in results)
+            {
+                resultString += result;
+            }
+            
+            return resultString;
         }
 
 
