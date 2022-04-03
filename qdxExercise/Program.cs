@@ -5,114 +5,151 @@ namespace qdxExercise
 {
     class Program
     {
+
+        //Questions removed, going with assumptions noted in previous commits. Following comment remains relevant
+        //Note: Confirm with Quadax before you submit. Working on the assumption that they will pick one at a time and only one per digit
+
         static void Main(string[] args)
         {
 
-            //---------------Randomly Generate a 4 digit number; Each digit "between numbers 1 and 6" ------------------
-            //Questions:
-            //Do all digits need to be unique?
-                //Based on mastermind, assuming yes. 
-            //Are the 1-6 digits inclusive?
-                //Based on mastermind, assuming yes.
+            int[] winningNumber = generateWinningNumber();
+            int[] userGuess = new int[4];
+            int attemptCount = 1;
+            string results = "";
 
-            //Thoughts: Store in an Array. Easy to index and compare. Easy to loop through
-            
-            
+
+
+            while (userGuess != winningNumber && attemptCount < 10)
+            {
+                userGuess = userNumberChoice();
+
+                results = resultsDisplay(userGuess, winningNumber);
+
+                Console.Clear();
+                Console.WriteLine($"Attempt: {attemptCount}");
+                Console.WriteLine("Your Guess Was: " + String.Join("", Array.ConvertAll<int, String>(userGuess, Convert.ToString)));
+                Console.WriteLine($"Your Results: {results}");
+
+                attemptCount++;
+
+                Console.WriteLine($"Press Enter for Guess {attemptCount}");
+                Console.ReadLine();
+                Console.SetCursorPosition(0, 5);
+
+            }
+        }
+
+
+        //Changing to Methods, Cleaning Up. 
+
+        //---------------Randomly Generate a 4 digit number; Each digit "between numbers 1 and 6" ------------------
+        static int[] generateWinningNumber()
+        {
             //Instantiate an array to hold the winning number  
             int[] numberWinning = new int[4];
 
             //Populate array - Duplicates not Allowed
             int[] digits = new int[] { 1, 2, 3, 4, 5, 6 };
             int randomDigit = new Random().Next(0, 6);
-           
+
             for (int i = 0; i < 4; i++)
             {
+                //Zero takes the place of used digits, loop continues until it finds an unused digit
                 while (digits[randomDigit] == 0)
                 {
                     randomDigit = new Random().Next(0, 6);
                 }
+                //Add digit to array that represents the winning number
                 numberWinning[i] = digits[randomDigit];
+
+                //Set used digit to 0;
                 digits[randomDigit] = 0;
             }
-
-            //Preview Number
-            string checkJoin = String.Join("", Array.ConvertAll<int, String>(numberWinning, Convert.ToString));
-            Console.WriteLine("Winning Number: " + checkJoin);
+            return numberWinning;
+        }
 
 
+        //Prompts user to select a four digit number, one at a time to mimic the app
+        static int[] userNumberChoice()
+        {
 
-
-
-
-
-            //allow player to input a combination of 4 digits
-            //Starting to think moving to all lists is the right move
-            
+            //Array to hold the map, list to choose from
 
             int[] numberGuess = new int[4];
-
             List<int> digitChoice = new List<int>() { 1, 2, 3, 4, 5, 6 };
-                
 
+            List<int[]> pastGuess = new List<int[]>();
+            List<string> pastResults = new List<string>();
+
+
+            //display current number (digit-by-digit)
             for (int i = 0; i < 4; i++)
-            
             {
+                Console.Write("Your Number: ");
+
+                foreach (int number in numberGuess)
+                {
+                    if (number != 0)
+                    {
+                        Console.Write(number);
+                    }
+                }
+                //Provide Remaining Choice 
+                Console.Write("\nChoose from the Following Digits: ");
+
                 foreach (int remainingDigit in digitChoice)
                 {
                     Console.Write(remainingDigit);
                 }
-                
-                Console.WriteLine("\nYour Choice?");
-                
-                //Will have to limit choices to remaining digits
+
+                //Prompt for input
+                Console.WriteLine("\nChoose a Digit and Press Enter");
+
+                //To Do: Limit choices and errors
+
                 numberGuess[i] = Int32.Parse(Console.ReadLine());
                 digitChoice.Remove(numberGuess[i]);
+                Console.Clear();
 
-                string checkJoin2 = String.Join("", Array.ConvertAll<int, String>(numberGuess, Convert.ToString));
-                Console.WriteLine(checkJoin2);
 
             }
 
 
-            //Choose 4 of the 6 numbers
-            //Display All 6
-            //Allow Choice 
-            //Display remaining
-            //Allow choice ...
-
-
-
-
-
-            //error check inputs
-
-            //question: should the user be able to choose only 1 of each digit? -Assuming yes
-
-            //question: should I ask for a 4 digit number from the user or only one at a time. -Assuming one at a time
-
-            //Note: Confirm with Quadax before you submit. Working on the assumption that they will pick one at a time and only one per digit
-
-
-            //compare to number and return
-            //  count up included and in the right spot for a +
-            //  count up included and not in the right spot for a -
-            //  return result
-            //+ signs come first, - signs second
-
-            //Allow 10 Chances
-
-            //Example: 3512
-            //Guess: 5318 should return +--
-            //Next Guess: 1356 should return +--
-            //Next Guess: 3152 should return +++-
-
-
-
-
-
-
-
+            return numberGuess;
 
         }
+
+        //Calculate results of the current guess (Note: Need to fix order: + first, - second, blank last)
+        static string resultsDisplay(int[] userGuess, int[] winningNumber)
+        {
+            string results = "";
+
+            //Compare guess to winning number
+            for (int i = 0; i < userGuess.Length; i++)
+            {
+                //Plus sign for each if it is in the right place
+                if (userGuess[i] == winningNumber[i])
+                {
+                    results += "+";
+                }
+                //minus sign for each in the answer, but not in the right place
+                else
+                {
+                    foreach (int numWin in winningNumber)
+                    {
+                        if (numWin == userGuess[i])
+                        {
+                            results += "-";
+                        }
+                    }
+                }
+
+
+            }
+
+            return results;
+        }
+
+
     }
 }
