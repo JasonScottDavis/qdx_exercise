@@ -15,48 +15,51 @@ namespace qdxExercise
         {
 
             int[] winningNumber = generateWinningNumber();
+            
             int[] userGuess = new int[4];
             int attemptCount = 1;
             string results = "";
 
+            List<int[]> previousGuessList = new List<int[]>();
+            List<string> previousResults = new List<string>();
 
 
-            while (userGuess != winningNumber && attemptCount <= 10)
+            while (attemptCount <= 10)
+            //while (userGuess != winningNumber && attemptCount <= 10)
             {
-                userGuess = userNumberChoice();
-
+                userGuess = userNumberChoice(previousGuessList, previousResults);
+                previousGuessList.Add(userGuess);
                 results = resultsDisplay(userGuess, winningNumber);
+                previousResults.Add(results);
 
                 Console.Clear();
-                Console.WriteLine($"Attempt: {attemptCount}");
-                Console.WriteLine("Your Guess Was: " + String.Join("", Array.ConvertAll<int, String>(userGuess, Convert.ToString)));
-                Console.WriteLine($"Your Results: {results}");
+
+                displayPreviousResults(previousGuessList, previousResults);
 
                 attemptCount++;
 
-
-                if (attemptCount < 10)
+                if (arrayEquality(userGuess, winningNumber))
                 {
-                    Console.WriteLine($"Press Enter for Guess {attemptCount}");
+                    Console.WriteLine("Winner!");
+                    Console.WriteLine("Congratulation, Press Enter To Exit Program");
                     Console.ReadLine();
-                }
-                else if(attemptCount == 10)
-                {
-                    Console.WriteLine($"Press Enter for Guess Last Attempt!");
-                    Console.ReadLine();
-                }
-            }
+                    break;
 
-            if(userGuess == winningNumber)
-            {
-                Console.WriteLine("Winner!");
-            }
+                }
 
-            else if (attemptCount >= 10)
-            {
+              //  Console.WriteLine($"Press Enter for Guess {attemptCount}");
+               // Console.ReadLine();
+                Console.Clear();
+
+                displayPreviousResults(previousGuessList, previousResults);
+
+                Console.WriteLine($"Guess {attemptCount}");
+            }
                 Console.WriteLine("Sorry! Thanks for Playing! Please Come Again!");
-            }
+            
         }
+
+
 
 
         //Changing to Methods, Cleaning Up. 
@@ -89,21 +92,26 @@ namespace qdxExercise
 
 
         //Prompts user to select a four digit number, one at a time to mimic the app
-        static int[] userNumberChoice()
+        static int[] userNumberChoice(List<int[]> previousGuess, List<string> previousResult)
         {
-
-            //Array to hold the map, list to choose from
-
+            //Array to hold the guess; list to choose from
             int[] numberGuess = new int[4];
             List<int> digitChoice = new List<int>() { 1, 2, 3, 4, 5, 6 };
-
-            List<int[]> pastGuess = new List<int[]>();
-            List<string> pastResults = new List<string>();
-
 
             //display current number (digit-by-digit)
             for (int i = 0; i < 4; i++)
             {
+                //Provide Remaining Choice 
+
+                Console.Write("Choose from the Following Digits: ");
+
+                foreach (int remainingDigit in digitChoice)
+                {
+                    Console.Write(remainingDigit);
+                }
+
+                //Prompt for input
+                Console.WriteLine("\nChoose a Digit and Press Enter");
                 Console.Write("Your Number: ");
 
                 foreach (int number in numberGuess)
@@ -113,30 +121,32 @@ namespace qdxExercise
                         Console.Write(number);
                     }
                 }
-                //Provide Remaining Choice 
-                Console.Write("\nChoose from the Following Digits: ");
 
-                foreach (int remainingDigit in digitChoice)
+                bool success = false;
+                int goodValue = 0;
+                success = Int32.TryParse(Console.ReadLine(), out goodValue);
+
+                while (!success || !digitChoice.Contains(goodValue))
                 {
-                    Console.Write(remainingDigit);
+                    Console.WriteLine("Invalid Input, Please Choose an availabe digit from the list");
+                    success = Int32.TryParse(Console.ReadLine(), out goodValue);
                 }
 
-                //Prompt for input
-                Console.WriteLine("\nChoose a Digit and Press Enter");
-
-                //To Do: Limit choices and errors
-
-                
-                numberGuess[i] = Int32.Parse(Console.ReadLine());
+                numberGuess[i] = goodValue;
                 digitChoice.Remove(numberGuess[i]);
+
+
                 Console.Clear();
 
+                displayPreviousResults(previousGuess, previousResult);
+
+                if (previousGuess.Count > 0)
+                {
+                    Console.WriteLine($"Guess: {previousGuess.Count + 1}");
+                }
 
             }
-
-
             return numberGuess;
-
         }
 
         //Calculate results of the current guess (Note: Need to fix order: + first, - second, blank last)
@@ -174,6 +184,42 @@ namespace qdxExercise
             }
             //return resultsString for use
             return resultString;
+        }
+
+        static void displayPreviousResults(List<int[]> previousGuess, List<string> previousResult)
+        {
+            int guessCount = 1;
+
+            if (previousGuess.Count > 0)
+            {
+                for (int j = 0; j < previousGuess.Count; j++)
+                {
+                    Console.WriteLine($"Guess {guessCount}");
+                    Console.WriteLine(String.Join("", Array.ConvertAll<int, String>(previousGuess[j], Convert.ToString)));
+                    Console.WriteLine(previousResult[j]);
+                    guessCount++;
+                }
+            }
+        }
+        static bool arrayEquality(int[] intArray1, int[] intArray2)
+        {
+            if (intArray1.Length == intArray2.Length)
+            {
+                for (int i = 0; i < intArray1.Length; i++)
+                {
+                    if (intArray1[i] == intArray2[i])
+                    {
+                        return true;
+                    }
+
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+            }
+            return false;
         }
     }
 }
